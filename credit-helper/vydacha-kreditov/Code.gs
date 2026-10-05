@@ -188,7 +188,7 @@ function moveDastrasToSeparateSheet() {
     const target = new Array(CFG.DASTRAS_LAST_COL).fill('');
     target[D.N - 1]       = r[C.N - 1];
     target[D.FIO - 1]     = fio;
-    target[D.AMOUNT - 1]  = r[C.AMOUNT - 1];
+    target[D.AMOUNT - 1]  = dastrasLimit_(r);
     target[D.PRODUCT - 1] = r[C.PRODUCT - 1];
     target[D.RATE - 1]    = r[C.RATE - 1];
     target[D.TERM - 1]    = r[C.TERM - 1];
@@ -226,7 +226,7 @@ function countDastrasInMain_() {
   sh.getRange(2, 1, lastRow - 1, CFG.LAST_COL).getValues().forEach(r => {
     if (isEmptyRow_(r) || !isDastras_(r[C.PRODUCT - 1])) return;
     count++;
-    limitSum += toNum_(r[C.AMOUNT - 1]);
+    limitSum += dastrasLimit_(r);
   });
   return { count, limitSum };
 }
@@ -260,6 +260,18 @@ function readDastrasTotals_() {
 // ================================================================
 // Закрыт ли кредит — единая проверка (Остаток ≤ 0 ИЛИ Статус = «Закрыл»)
 // ================================================================
+/**
+ * Лимит «Дастрас» из строки основного листа. В «Сумме кредита» у таких
+ * строк стоит заглушка (0 или 0,1), а лимит записан в колонку «По графику» —
+ * берём большее из двух.
+ */
+function dastrasLimit_(r) {
+  const C = CFG.COL;
+  const amount = toNum_(r[C.AMOUNT - 1]);
+  const sched = r[C.SCHEDULE - 1];
+  return Math.max(amount, (sched instanceof Date) ? 0 : toNum_(sched));
+}
+
 function isDastras_(product) {
   return CFG.DASTRAS_PRODUCTS.includes((product || '').toString().trim());
 }
