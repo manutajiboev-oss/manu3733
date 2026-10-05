@@ -564,7 +564,7 @@ select:hover,.btn:hover{border-color:var(--accent);}
 .tile .v small{font-size:12.5px;font-weight:700;color:var(--ink2);margin-left:3px;}
 .tile .sub{font-size:11.5px;color:var(--ink2);margin-top:5px;display:flex;align-items:center;gap:5px;}
 .tile.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff;}
-.tile.hero .k{color:rgba(255,255,255,.85)}.tile.hero .v{color:#fff}.tile.hero .sub{color:rgba(255,255,255,.9)}
+.tile.hero .k,.tile.hero .v small{color:rgba(255,255,255,.85)}.tile.hero .v{color:#fff}.tile.hero .sub{color:rgba(255,255,255,.9)}
 .tile.tint-teal{background:var(--t-teal)}.tile.tint-amber{background:var(--t-amber)}.tile.tint-slate{background:var(--t-slate)}.tile.tint-ind{background:var(--t-ind)}.tile.tint-rose{background:var(--t-rose)}
 .delta{font-weight:700;font-size:12px;padding:1px 7px;border-radius:999px;display:inline-flex;align-items:center;gap:3px;}
 .delta.up{color:var(--up);background:color-mix(in srgb,var(--up) 14%,transparent);}
