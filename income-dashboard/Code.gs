@@ -213,7 +213,7 @@ function readLoans_(activeSh, archiveSh) {
         cO = colIdx_(h, ['остаток']),
         cE = colIdx_(h, ['эксперт']),
         cDg= colIdx_(h, ['номер договора','договор']),
-        cD = colIdx_(h, ['выдача']);
+        cD = colIdx_(h, ['дата выдач','выдач']);
     for (var i = 1; i < av.length; i++) {
       var row = av[i]; if (cF<0 || !row[cF]) continue;
       put(row[cF], cS>=0?row[cS]:0, cD>=0?row[cD]:'', cDg>=0?row[cDg]:'', {
@@ -237,7 +237,7 @@ function readLoans_(activeSh, archiveSh) {
         aSt= colIdx_(hh, ['статус']),
         aC = colIdx_(hh, ['дата закры','закрыт']),
         aDg= colIdx_(hh, ['номер договора','договор']),
-        aD = colIdx_(hh, ['выдача']);
+        aD = colIdx_(hh, ['дата выдач','выдач']);
     for (var r = 1; r < rv.length; r++) {
       var rr = rv[r]; if (aF<0 || !rr[aF]) continue;
       var st = aSt>=0 ? norm_(rr[aSt]) : '';
@@ -274,7 +274,7 @@ function readIncome_(sh) {
   var idHeaders = vals[hdrRow].map(norm_);
   var cFio = colIdx_(idHeaders, ['фио']),
       cSum = colIdx_(idHeaders, ['сумма']),
-      cDate= colIdx_(idHeaders, ['выдача']),
+      cDate= colIdx_(idHeaders, ['дата выдач','выдач']),
       cSt  = colIdx_(idHeaders, ['статус']),
       cDg  = colIdx_(idHeaders, ['номер договора','договор']);
 
@@ -315,6 +315,18 @@ function readIncome_(sh) {
       dog: cDg>=0 ? v[cDg] : '',
       mt: mt, mp: mp
     });
+  }
+  // отбрасываем пустые месяцы в конце (колонка уже есть, но поступлений ещё нет — иначе «динамика −100%»)
+  var keep = monthCols.length;
+  while (keep > 1) {
+    var any = false;
+    for (var q = 0; q < rows.length && !any; q++) if (rows[q].mt[keep-1] || rows[q].mp[keep-1]) any = true;
+    if (any) break;
+    keep--;
+  }
+  if (keep < monthCols.length) {
+    monthCols = monthCols.slice(0, keep);
+    rows.forEach(function (x) { x.mt = x.mt.slice(0, keep); x.mp = x.mp.slice(0, keep); });
   }
   return { months: monthCols.map(function(x){return x.short;}), rows: rows };
 }
